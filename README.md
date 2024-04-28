@@ -2,6 +2,5 @@
 
 ## Integrantes
 
-- integrante1 (usuario github)
-- integrante2 (usuario github)
-...
+- Angelucci Damian Leonardo - Usuario de GitHub: damiang91
+- Ailen Tamara Olha - Usuario de GitHub: ailenolha13
