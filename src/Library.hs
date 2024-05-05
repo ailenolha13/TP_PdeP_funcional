@@ -5,15 +5,21 @@ import PdePreludat
 type ValorCiudad = Number
 -- Creamos el tipo Anio 
 type Anio = Number
+-- Creamos el tipo Atraccion
+type Atraccion = String
 
 -- Modelamos ciudades
 -- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida
 data Ciudad = UnaCiudad {
-    nombre :: String,
-    anioFundacion :: Number,
-    atraccionesPrincipales :: [String],
-    costoVida :: Number
+    nombre :: String
+    , anioFundacion :: Number
+    , atraccionesPrincipales :: [String]
+    , costoVida :: Number
 } deriving (Show)
+-- Instancia Eq para el tipo Ciudad para en los test poder comparar 2 valores de tipo Ciudad, sino el ShouldBe tira error
+instance Eq Ciudad where
+  (UnaCiudad n1 af1 ap1 cv1) == (UnaCiudad n2 af2 ap2 cv2) =
+    n1 == n2 && af1 == af2 && ap1 == ap2 && cv1 == cv2
 
 -- Funcion para obtener el valor de una ciudad en base a 3 condiciones mencionadas en el enunciado del TP
 obtieneValor :: Ciudad -> ValorCiudad
@@ -41,6 +47,33 @@ tieneAtraccionCopada = any esVocal . map head . atraccionesPrincipales
 esVocal :: Char -> Bool
 esVocal caracter = caracter `elem` "aeiouAEIOU"
 
+------------ TO-DO Punto 2 ------------
+-- CIUDAD SOBRIA:
+
+-- CIUDAD CON NOMBRE RARO:
+
+---------------------------------------
+
+-- Como no hay efecto en haskell, recibimos una ciudad y devolvemos una ciudad nueva
+agregarNuevaAtraccion :: Atraccion -> Ciudad -> Ciudad
+agregarNuevaAtraccion nueva ciudad = UnaCiudad {
+    nombre = nombre ciudad
+    , anioFundacion = anioFundacion ciudad
+    , atraccionesPrincipales = nueva : atraccionesPrincipales ciudad
+    , costoVida = costoVida ciudad * 1.2
+}
+
+------------ TO-DO Punto 3 ------------
+-- CRISIS:
+
+-- REMODELACION:
+
+-- REEVALUACION:
+
+------------ TO-DO Punto 4 ------------
+-- LA TRANSFORMACION:
+
+
 -- Funciones utiles
 doble :: Number -> Number
 doble numero = numero + numero
@@ -51,12 +84,34 @@ quintuple numero = 5 * numero
 resta :: Number -> Number -> Number
 resta numero1 numero2 = numero1 - numero2
 
--- Ciudades creadas solo con el proposito de poder probar las funciones rapidamente - DESPUES HAY QUE BORRARLAS:
-buenosAires:: Ciudad
-buenosAires = UnaCiudad {nombre = "Buenos Aires", anioFundacion = 1536, atraccionesPrincipales = ["Obelisco"], costoVida= 50}
-salta:: Ciudad
-salta = UnaCiudad {nombre = "Salta", anioFundacion = 1530, atraccionesPrincipales = ["Tren de las nubes", "Cafayate", "Obispo", "Empanadas"], costoVida= 30}
-mendoza :: Ciudad
-mendoza = UnaCiudad {nombre = "Mendoza", anioFundacion = 1850, atraccionesPrincipales = [], costoVida= 20}
-sanLuis :: Ciudad
-sanLuis = UnaCiudad {nombre = "San Luis", anioFundacion = 1950, atraccionesPrincipales = ["Rapel", "Trekking", "Tirolesa"], costoVida= 100}
+-- Ciudades
+baradero :: Ciudad
+baradero = UnaCiudad {
+        nombre = "Baradero"
+        , anioFundacion = 1615
+        , atraccionesPrincipales = ["Parque del Este", "Museo Alejandro Barbich"]
+        , costoVida = 150 }
+nullish :: Ciudad
+nullish = UnaCiudad {
+        nombre = "Nullish"
+        , anioFundacion = 1800
+        , atraccionesPrincipales = []
+        , costoVida = 140 }
+caletaOlivia :: Ciudad
+caletaOlivia = UnaCiudad {
+        nombre = "Caleta Olivia"
+        , anioFundacion = 1901
+        , atraccionesPrincipales = ["El Gorosito", "Faro Costanera"]
+        , costoVida = 120 }
+azul :: Ciudad
+azul = UnaCiudad {
+    nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales = ["Teatro Español", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , costoVida = 190 }
+azulNueva :: Ciudad
+azulNueva = UnaCiudad {
+    nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales = ["Balneario Municipal Alte. Guillermo Brown", "Teatro Español", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , costoVida = 228 }
