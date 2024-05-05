@@ -1,4 +1,4 @@
-# ejercicio-alumno
+# TP Funcional - Paradigmas de Programación - Funcity
 
 ## Integrantes
 

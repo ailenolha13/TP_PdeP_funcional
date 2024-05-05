@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Redundant map" #-}
 module Library where
 import PdePreludat
 
@@ -33,6 +35,14 @@ es5VecesLaDiferencia anio anioFundacion = quintuple (resta anio anioFundacion)
 noTieneAtracciones :: Ciudad -> Bool
 noTieneAtracciones = null . atraccionesPrincipales
 
+-- Funcion para saber si la ciudad tiene una atraccion copada
+tieneAtraccionCopada :: Ciudad -> Bool
+tieneAtraccionCopada = any esVocal . map head . atraccionesPrincipales
+
+-- Funcion para saber si un caracter es vocal o no
+esVocal :: Char -> Bool
+esVocal caracter = caracter `elem` "aeiouAEIOU"
+
 -- Funciones utiles
 doble :: Number -> Number
 doble numero = numero + numero
@@ -46,6 +56,8 @@ resta numero1 numero2 = numero1 - numero2
 -- Ciudades creadas solo con el proposito de poder probar las funciones rapidamente - DESPUES HAY QUE BORRARLAS:
 buenosAires:: Ciudad
 buenosAires = UnaCiudad {nombre = "Buenos Aires", anioFundacion = 1536, atraccionesPrincipales = ["Obelisco"], costoVida= 50}
+salta:: Ciudad
+salta = UnaCiudad {nombre = "Salta", anioFundacion = 1530, atraccionesPrincipales = ["Tren de las nubes", "Cafayate", "Obispo", "Empanadas"], costoVida= 30}
 mendoza :: Ciudad
 mendoza = UnaCiudad {nombre = "Mendoza", anioFundacion = 1850, atraccionesPrincipales = [], costoVida= 20}
 sanLuis :: Ciudad
