@@ -49,8 +49,13 @@ esVocal caracter = caracter `elem` "aeiouAEIOU"
 
 ------------ TO-DO Punto 2 ------------
 -- CIUDAD SOBRIA:
+esSobria :: Number -> Ciudad -> Bool
+esSobria xLetras ciudad | null (atraccionesPrincipales ciudad) = False
+                        | otherwise = all((> xLetras).length) (atraccionesPrincipales ciudad)
 
 -- CIUDAD CON NOMBRE RARO:
+tieneNombreRaro :: Ciudad -> Bool
+tieneNombreRaro ciudad = length (nombre ciudad) < 5
 
 ---------------------------------------
 
@@ -115,3 +120,10 @@ azulNueva = UnaCiudad {
     , anioFundacion = 1832
     , atraccionesPrincipales = ["Balneario Municipal Alte. Guillermo Brown", "Teatro Español", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 228 }
+maipu :: Ciudad
+maipu = UnaCiudad {
+    nombre = "Maipu"
+    , anioFundacion = 1878
+    , atraccionesPrincipales = ["Fortín Kakel"]
+    , costoVida = 115 
+}
