@@ -16,10 +16,6 @@ data Ciudad = UnaCiudad {
     , atraccionesPrincipales :: [String]
     , costoVida :: Number
 } deriving (Show)
--- Instancia Eq para el tipo Ciudad para en los test poder comparar 2 valores de tipo Ciudad, sino el ShouldBe tira error
-instance Eq Ciudad where
-  (UnaCiudad n1 af1 ap1 cv1) == (UnaCiudad n2 af2 ap2 cv2) =
-    n1 == n2 && af1 == af2 && ap1 == ap2 && cv1 == cv2
 
 -- Funcion para obtener el valor de una ciudad en base a 3 condiciones mencionadas en el enunciado del TP
 obtieneValor :: Ciudad -> ValorCiudad
@@ -54,7 +50,7 @@ esVocal caracter = caracter `elem` "aeiouAEIOU"
 
 ---------------------------------------
 
--- Como no hay efecto en haskell, recibimos una ciudad y devolvemos una ciudad nueva
+-- Como no hay efecto, cuando queremos agregar una nueva atraccion a una ciudad recibimos la ciudad y devolvemos una ciudad nueva
 agregarNuevaAtraccion :: Atraccion -> Ciudad -> Ciudad
 agregarNuevaAtraccion nueva ciudad = UnaCiudad {
     nombre = nombre ciudad
@@ -64,15 +60,42 @@ agregarNuevaAtraccion nueva ciudad = UnaCiudad {
 }
 
 ------------ TO-DO Punto 3 ------------
--- CRISIS:
+atraviesaCrisis :: Ciudad -> Ciudad
+atraviesaCrisis ciudad = UnaCiudad {
+    nombre = nombre ciudad
+    , anioFundacion = anioFundacion ciudad
+    , atraccionesPrincipales = init (atraccionesPrincipales ciudad)
+    , costoVida = costoVida ciudad * 0.9 
+}
 
 -- REMODELACION:
 
 -- REEVALUACION:
 
------------- TO-DO Punto 4 ------------
--- LA TRANSFORMACION:
+------------ IN PROGRESS Punto 4 ------------
+{-- 
 
+Para que una ciudad tenga una nueva atraccion, en la consola GHCI debemos usar la funcion agregarnuevaAtraccion.
+La funcion agregarnuevaAtraccion recibe como primer parametro la atraccion a agregar,
+y como segundo parametro recibe la ciudad a la que le vamos a agregar la atraccion.
+
+Para agregar la atraccion "Balneario Municipal Alte. Guillermo Brown" a la ciudad azul escribimos en la consola:
+agregarNuevaAtraccion "Balneario Municipal Alte. Guillermo Brown" azul
+
+La consola nos devuelve la ciudad azul con la atraccion agregada:
+UnaCiudad
+    { nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales =
+        [ "Balneario Municipal Alte. Guillermo Brown"
+        , "Teatro Español"
+        , "Parque Municipal Sarmiento"
+        , "Costanera Cacique Catriel"
+        ]
+    , costoVida = 228
+    }
+
+--}
 
 -- Funciones utiles
 doble :: Number -> Number
@@ -84,7 +107,11 @@ quintuple numero = 5 * numero
 resta :: Number -> Number -> Number
 resta numero1 numero2 = numero1 - numero2
 
--- Ciudades
+-- Instancia Eq para el tipo Ciudad para en los test poder comparar 2 valores de tipo Ciudad, sino el ShouldBe tira error
+instance Eq Ciudad where
+  (UnaCiudad n1 af1 ap1 cv1) == (UnaCiudad n2 af2 ap2 cv2) =
+    n1 == n2 && af1 == af2 && ap1 == ap2 && cv1 == cv2
+-- Ciudades para los test
 baradero :: Ciudad
 baradero = UnaCiudad {
         nombre = "Baradero"
@@ -115,3 +142,9 @@ azulNueva = UnaCiudad {
     , anioFundacion = 1832
     , atraccionesPrincipales = ["Balneario Municipal Alte. Guillermo Brown", "Teatro Español", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 228 }
+azulCrisis :: Ciudad
+azulCrisis = UnaCiudad {
+    nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales = ["Teatro Español", "Parque Municipal Sarmiento"]
+    , costoVida = 171 }
