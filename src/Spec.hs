@@ -31,11 +31,15 @@ correrTests = hspec $ do
   describe "Test de la funcion agregarNuevaAtraccion" $ do
     it "La ciudad Azul tiene 4 atracciones principales y su costo de vida es 228" $ do
       agregarNuevaAtraccion "Balneario Municipal Alte. Guillermo Brown" azul
-      `shouldBe` azulNueva -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
+      `shouldBe` azulNuevaAtraccion -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
   -- Test "Crisis"
   describe "Test de la funcion atraviesaCrisis" $ do
     it "La ciudad Azul tiene 2 atracciones principales y su costo de vida es 171" $ do
       atraviesaCrisis azul
       `shouldBe` azulCrisis -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
-
+  -- Test "Remodelacion"
+  describe "Test de la funcion remodelaCiudad" $ do
+    it "La ciudad Azul remodelada pasa a llamarse New Azul y su costo de vida es 285" $ do
+      remodelaCiudad azul 50
+      `shouldBe` azulRemodelada -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
 
