@@ -28,9 +28,9 @@ correrTests = hspec $ do
       tieneAtraccionCopada caletaOlivia
         `shouldBe` True
   -- Test "Agregar una nueva atraccion"
-  describe "Test de la funcion agregarNuevaAtraccion" $ do
+  describe "Test de la funcion agregaNuevaAtraccion" $ do
     it "La ciudad Azul tiene 4 atracciones principales y su costo de vida es 228" $ do
-      agregarNuevaAtraccion "Balneario Municipal Alte. Guillermo Brown" azul
+      agregaNuevaAtraccion "Balneario Municipal Alte. Guillermo Brown" azul
       `shouldBe` azulNuevaAtraccion -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
   -- Test "Crisis"
   describe "Test de la funcion atraviesaCrisis" $ do
@@ -40,6 +40,14 @@ correrTests = hspec $ do
   -- Test "Remodelacion"
   describe "Test de la funcion remodelaCiudad" $ do
     it "La ciudad Azul remodelada pasa a llamarse New Azul y su costo de vida es 285" $ do
-      remodelaCiudad azul 50
+      remodelaCiudad 50 azul
       `shouldBe` azulRemodelada -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
-
+  -- Test "Los anios pasan..."
+  --describe "Test de la funcion reflejaAnioCiudad" $ do
+    --it "La ciudad Azul refleja el paso del anio 2022 quedando con el nombre New Azul, su costo de vida en 197.505 y las atracciones Teatro Espanio y Parque Municipal Sarmiento " $ do
+      --reflejaAnioCiudad anio2022 azul
+      --`shouldBe` azul2022
+  describe "Test de la funcion reflejaAnioCiudad" $ do
+    it "La ciudad Azul refleja el paso del anio 2015 quedando con el mismo costo de vida" $ do
+      reflejaAnioCiudad anio2015 azul
+      `shouldBe` azul2015 

@@ -1,11 +1,13 @@
 module Library where
 import PdePreludat
 
--- Creamos algunos tipos utiles para el desarrollo del tp 
+-- Creamos algunos tipos utiles para el desarrollo del TP 
 type ValorCiudad = Number
-type Anio = Number
 type Atraccion = String
 type Incremento = Number
+type Evento = Ciudad -> Ciudad
+
+------------ PUNTO 1 PARTE 1 ------------
 
 -- Modelamos ciudades
 -- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida
@@ -22,17 +24,29 @@ obtieneValor ciudad | fueFundadaAntesDe 1800 ciudad = es5VecesLaDiferencia 1800 
                     | noTieneAtracciones ciudad = doble (costoVida ciudad)
                     | otherwise = triple (costoVida ciudad)
 
--- Funcion para saber si la ciudad fue fundanda antes del anio 1800
-fueFundadaAntesDe :: Anio -> Ciudad -> Bool
+-- Funcion para saber si la ciudad fue fundanda antes de un año configurable
+fueFundadaAntesDe :: Number -> Ciudad -> Bool
 fueFundadaAntesDe anio ciudad = anioFundacion ciudad < anio
 
--- Funcion para calcular 5 veces la diferencia entre 1800 y el anio de fundacion
-es5VecesLaDiferencia :: Anio -> Anio -> Number
+-- Funcion para calcular 5 veces la diferencia entre un año configurable y el anio de fundacion
+es5VecesLaDiferencia :: Number -> Number -> Number
 es5VecesLaDiferencia anio anioFundacion = quintuple (resta anio anioFundacion)
 
 -- Funcion para saber si la ciudad tiene o no atracciones
 noTieneAtracciones :: Ciudad -> Bool
 noTieneAtracciones = null . atraccionesPrincipales
+
+-- Funciones utiles
+doble :: Number -> Number
+doble numero = numero + numero
+triple :: Number -> Number
+triple numero = 3 * numero
+quintuple :: Number -> Number
+quintuple numero = 5 * numero
+resta :: Number -> Number -> Number
+resta numero1 numero2 = numero1 - numero2
+
+------------ PUNTO 2 PARTE 1 ------------
 
 -- Funcion para saber si la ciudad tiene una atraccion copada
 tieneAtraccionCopada :: Ciudad -> Bool
@@ -51,15 +65,18 @@ esSobria xLetras ciudad | null (atraccionesPrincipales ciudad) = False
 tieneNombreRaro :: Ciudad -> Bool
 tieneNombreRaro ciudad = length (nombre ciudad) < 5
 
+------------ PUNTO 3 PARTE 1 ------------
+
 -- Como no hay efecto de lado, cuando queremos agregar una nueva atraccion a una ciudad recibimos la ciudad y devolvemos una ciudad nueva
-agregarNuevaAtraccion :: Atraccion -> Ciudad -> Ciudad
-agregarNuevaAtraccion nueva ciudad = UnaCiudad {
+agregaNuevaAtraccion :: Atraccion -> Ciudad -> Ciudad
+agregaNuevaAtraccion nueva ciudad = UnaCiudad {
     nombre = nombre ciudad
     , anioFundacion = anioFundacion ciudad
     , atraccionesPrincipales = nueva : atraccionesPrincipales ciudad
     , costoVida = costoVida ciudad * 1.2
 }
 
+-- Como no hay efecto de lado, cuando una ciudad atraviesa una crisis recibimos la ciudad y devolvemos una ciudad nueva
 atraviesaCrisis :: Ciudad -> Ciudad
 atraviesaCrisis ciudad = UnaCiudad {
     nombre = nombre ciudad
@@ -68,8 +85,9 @@ atraviesaCrisis ciudad = UnaCiudad {
     , costoVida = costoVida ciudad * 0.9 
 }
 
-remodelaCiudad :: Ciudad -> Incremento -> Ciudad
-remodelaCiudad ciudad incremento = UnaCiudad {
+-- Como no hay efecto de lado, cuando queremos remodelar una ciudad recibimos la ciudad y devolvemos una ciudad nueva remodelada
+remodelaCiudad :: Incremento -> Ciudad -> Ciudad
+remodelaCiudad incremento ciudad = UnaCiudad {
     nombre = "New " ++ nombre ciudad
     , anioFundacion = anioFundacion ciudad
     , atraccionesPrincipales = atraccionesPrincipales ciudad
@@ -79,7 +97,7 @@ remodelaCiudad ciudad incremento = UnaCiudad {
 ------------ TO-DO Punto 3 ------------
 -- REEVALUACION:
 
------------- IN PROGRESS Punto 4 ------------
+------------ PUNTO 4 PARTE 1 ------------
 {-- 
 
 Para que una ciudad tenga una nueva atraccion, en la consola GHCI debemos usar la funcion agregarnuevaAtraccion.
@@ -107,11 +125,11 @@ UnaCiudad
 {-- 
 
 Para que una ciudad tenga una remodelacion, en la consola GHCI debemos usar la funcion remodelaCiudad.
-La funcion remodelaCiudad recibe como primer parametro la ciudad a remodelar,
-y como segundo parametro recibe el incremento de su costo de vida configurable (x%).
+La funcion remodelaCiudad recibe como primer parametro el incremento de su costo de vida configurable (x%),
+y como segundo parametro la ciudad a remodelar.
 
 Para remodelar la ciudad azul escribimos en la consola:
-remodelaCiudad azul 50
+remodelaCiudad 50 azul
 
 La consola nos devuelve la ciudad azul con la atraccion agregada:
 UnaCiudad
@@ -148,20 +166,35 @@ UnaCiudad
 
 --}
 
--- Funciones utiles
-doble :: Number -> Number
-doble numero = numero + numero
-triple :: Number -> Number
-triple numero = 3 * numero
-quintuple :: Number -> Number
-quintuple numero = 5 * numero
-resta :: Number -> Number -> Number
-resta numero1 numero2 = numero1 - numero2
+------------ PUNTO 4.1 PARTE 2 ------------
+
+-- Modelamos un año, donde queremos saber el numero que le corresponde y una serie de eventos que se produjeron en ese año
+data Anio = UnAnio {
+    numero :: Number
+    , eventos :: [Evento]
+} deriving (Show)
+
+reflejaAnioCiudad :: Anio -> Ciudad -> Ciudad
+reflejaAnioCiudad anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (eventos anio)
+
+------------ TO-DO PUNTO 4.2 PARTE 2 ------------
+------------ TO-DO PUNTO 4.3 PARTE 2 ------------
+------------ TO-DO PUNTO 4.4 PARTE 2 ------------
+------------ TO-DO PUNTO 4.5 PARTE 2 ------------
+------------ TO-DO PUNTO 5.1 PARTE 2 ------------
+------------ TO-DO PUNTO 5.2 PARTE 2 ------------
+------------ TO-DO PUNTO 5.3 PARTE 2 ------------
+------------ TO-DO PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
+------------ TO-DO PUNTO 6 Eventos ordenados PARTE 2 ------------
+------------ TO-DO PUNTO 6 Años ordenados  PARTE 2 ------------
+
+
+------------ UTIL PARA EJECUTAR LOS TEST ------------
 
 -- Instancia Eq para el tipo Ciudad para en los test poder comparar 2 valores de tipo Ciudad, sino el ShouldBe tira error
 instance Eq Ciudad where
-  (UnaCiudad n1 af1 ap1 cv1) == (UnaCiudad n2 af2 ap2 cv2) =
-    n1 == n2 && af1 == af2 && ap1 == ap2 && cv1 == cv2
+  (UnaCiudad n1 af1 ap1 cv1) == (UnaCiudad n2 af2 ap2 cv2) = n1 == n2 && af1 == af2 && ap1 == ap2 && cv1 == cv2
+
 -- Ciudades para los test
 baradero :: Ciudad
 baradero = UnaCiudad {
@@ -212,3 +245,27 @@ azulRemodelada = UnaCiudad {
     , anioFundacion = 1832
     , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 285 }
+azul2022 :: Ciudad
+azul2022 = UnaCiudad {
+    nombre = "New Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento"]
+    , costoVida = 197.505 }
+azul2015 :: Ciudad
+azul2015 = UnaCiudad {
+    nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , costoVida = 190 }
+
+--- Anios para los test
+anio2022 :: Anio
+anio2022 = UnAnio {
+    numero = 2022
+    , eventos = [atraviesaCrisis, remodelaCiudad 5] --FALTA AGREGAR REEVALUACION DE 7 LETRAS PARA LAS ATRACCIONES (FUNCION PARTE 1 NO CREADA TODAVIA)
+}
+anio2015 :: Anio
+anio2015 = UnAnio {
+    numero = 2015
+    , eventos = []
+}
