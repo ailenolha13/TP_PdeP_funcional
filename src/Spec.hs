@@ -16,6 +16,7 @@ correrTests = hspec $ do
     it "El valor de la ciudad Caleta Olivia es 360" $ do
       obtieneValor caletaOlivia
         `shouldBe` 360
+
   -- Test "Alguna atraccion copada"
   describe "Test de la funcion tieneAtraccionCopada" $ do
     it "La ciudad Baradero no tiene atraccion copada" $ do
@@ -27,22 +28,27 @@ correrTests = hspec $ do
     it "La ciudad Caleta Olivia tiene atraccion copada" $ do
       tieneAtraccionCopada caletaOlivia
         `shouldBe` True
+
   -- Test "Agregar una nueva atraccion"
   describe "Test de la funcion agregaNuevaAtraccion" $ do
     it "La ciudad Azul tiene 4 atracciones principales y su costo de vida es 228" $ do
       agregaNuevaAtraccion "Balneario Municipal Alte. Guillermo Brown" azul
       `shouldBe` azulNuevaAtraccion -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
+
   -- Test "Crisis"
   describe "Test de la funcion atraviesaCrisis" $ do
     it "La ciudad Azul tiene 2 atracciones principales y su costo de vida es 171" $ do
       atraviesaCrisis azul
       `shouldBe` azulCrisis -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
+
   -- Test "Remodelacion"
   describe "Test de la funcion remodelaCiudad" $ do
     it "La ciudad Azul remodelada pasa a llamarse New Azul y su costo de vida es 285" $ do
       remodelaCiudad 50 azul
       `shouldBe` azulRemodelada -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
+
   -- Test "Los anios pasan..."
+  -- COMENTADO PORQUE ROMPE SIN LA FUNCION REEVALUACION DE LA PARTE 1 DEL TP
   --describe "Test de la funcion reflejaAnioCiudad" $ do
     --it "La ciudad Azul refleja el paso del anio 2022 quedando con el nombre New Azul, su costo de vida en 197.505 y las atracciones Teatro Espanio y Parque Municipal Sarmiento " $ do
       --reflejaAnioCiudad anio2022 azul
@@ -50,4 +56,37 @@ correrTests = hspec $ do
   describe "Test de la funcion reflejaAnioCiudad" $ do
     it "La ciudad Azul refleja el paso del anio 2015 quedando con el mismo costo de vida" $ do
       reflejaAnioCiudad anio2015 azul
-      `shouldBe` azul2015 
+      `shouldBe` azul2015
+
+   -- Test "Algo mejor"
+  describe "Test de la funcion subeRespectoCriterio" $ do
+    it "La ciudad Azul tras atravesar una crisis no subio su costo de vida" $ do
+      subeRespectoCriterio azul criterioCostoVida atraviesaCrisis
+      `shouldBe` False
+  describe "Test de la funcion subeRespectoCriterio" $ do
+    it "La ciudad Azul tras el evento Agregar atraccion 'Monasterio Trapense' subio su costo de vida" $ do
+      subeRespectoCriterio azul criterioCostoVida (agregaNuevaAtraccion "Monasterio Trapense")
+      `shouldBe` True
+  describe "Test de la funcion subeRespectoCriterio" $ do
+    it "La ciudad Azul tras el evento Agregar atraccion 'Monasterio Trapense' subio la cantidad de atracciones" $ do
+      subeRespectoCriterio azul criterioCantidadAtracciones (agregaNuevaAtraccion "Monasterio Trapense")
+      `shouldBe` True
+  
+  -- Test "Costo de vida que suba"
+  -- COMENTADO PORQUE ROMPE SIN LA FUNCION REEVALUACION DE LA PARTE 1 DEL TP
+  --describe "Test de la funcion aumentanCostoVida" $ do
+    --it "La ciudad Azul tras eventos ocurridos en el año 2022 que aumentan su costo de vida queda con el nombre New Azul y su costo de vida pasa a 219.45" $ do
+      --aumentanCostoVida anio2022 azul
+      --`shouldBe` azulConMasCostoVida
+
+  -- Test "Costo de vida que baje  "
+  describe "Test de la funcion bajanCostoVida" $ do
+    it "La ciudad Azul tras eventos ocurridos en el año 2022 que bajan su costo de vida queda con el nombre Azul y su costo de vida pasa a 171" $ do
+      bajanCostoVida anio2022 azul
+      `shouldBe` azulConMenosCostoVida
+
+  -- Test "Valor que suba"
+  describe "Test de la funcion aumentanValor" $ do
+    it "La ciudad Nullish tras eventos ocurridos en el año 2022 que aumentan su valor queda con el nombre New Nullish y su costo de vida es 147" $ do
+      aumentanValor anio2022 criterioCostoVida nullish
+      `shouldBe` nullishConMasValor

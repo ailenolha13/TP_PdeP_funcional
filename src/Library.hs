@@ -1,13 +1,9 @@
 module Library where
 import PdePreludat
 
--- Creamos algunos tipos utiles para el desarrollo del TP 
-type ValorCiudad = Number
-type Atraccion = String
-type Incremento = Number
-type Evento = Ciudad -> Ciudad
-
 ------------ PUNTO 1 PARTE 1 ------------
+
+type ValorCiudad = Number
 
 -- Modelamos ciudades
 -- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida
@@ -66,6 +62,9 @@ tieneNombreRaro :: Ciudad -> Bool
 tieneNombreRaro ciudad = length (nombre ciudad) < 5
 
 ------------ PUNTO 3 PARTE 1 ------------
+
+type Atraccion = String
+type Incremento = Number
 
 -- Como no hay efecto de lado, cuando queremos agregar una nueva atraccion a una ciudad recibimos la ciudad y devolvemos una ciudad nueva
 agregaNuevaAtraccion :: Atraccion -> Ciudad -> Ciudad
@@ -168,22 +167,58 @@ UnaCiudad
 
 ------------ PUNTO 4.1 PARTE 2 ------------
 
+type Evento = Ciudad -> Ciudad
+
 -- Modelamos un año, donde queremos saber el numero que le corresponde y una serie de eventos que se produjeron en ese año
 data Anio = UnAnio {
     numero :: Number
     , eventos :: [Evento]
 } deriving (Show)
 
+-- Reflejamos el paso de un año para una ciudad
 reflejaAnioCiudad :: Anio -> Ciudad -> Ciudad
 reflejaAnioCiudad anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (eventos anio)
 
------------- TO-DO PUNTO 4.2 PARTE 2 ------------
------------- TO-DO PUNTO 4.3 PARTE 2 ------------
------------- TO-DO PUNTO 4.4 PARTE 2 ------------
------------- TO-DO PUNTO 4.5 PARTE 2 ------------
+------------ PUNTO 4.2 PARTE 2 ------------
+
+type Criterio = Ciudad -> Number
+
+criterioCostoVida :: Criterio
+criterioCostoVida = costoVida
+
+criterioCantidadAtracciones :: Criterio
+criterioCantidadAtracciones = length . atraccionesPrincipales
+
+-- Función que nos dice si la ciudad tras un evento subió respecto a un criterio de comparacion 
+subeRespectoCriterio :: Ciudad -> Criterio -> Evento -> Bool
+subeRespectoCriterio ciudad criterio evento =  criterio ciudad < criterio (evento ciudad)
+
+------------ PUNTO 4.3 PARTE 2 ------------
+
+--Funcion que aplica eventos que hagan que el costo de vida de la ciudad suba
+aumentanCostoVida :: Anio -> Ciudad -> Ciudad
+aumentanCostoVida anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (subeRespectoCriterio ciudad criterioCostoVida) (eventos anio))
+
+------------ PUNTO 4.4 PARTE 2 ------------
+
+-- Función que nos dice si la ciudad tras un evento bajó respecto a un criterio de comparacion 
+bajaRespectoCriterio :: Ciudad -> Criterio -> Evento -> Bool
+bajaRespectoCriterio ciudad criterio evento =  criterio ciudad > criterio (evento ciudad)
+
+--Funcion que aplica eventos que hagan que el costo de vida de la ciudad baje
+bajanCostoVida :: Anio -> Ciudad -> Ciudad
+bajanCostoVida anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (bajaRespectoCriterio ciudad criterioCostoVida) (eventos anio))
+
+------------ PUNTO 4.5 PARTE 2 ------------
+
+--Funcion que aplica eventos que hagan que el valor de la ciudad suba
+aumentanValor :: Anio -> Criterio -> Ciudad -> Ciudad
+aumentanValor anio criterio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (subeRespectoCriterio ciudad criterio ) (eventos anio))
+
 ------------ TO-DO PUNTO 5.1 PARTE 2 ------------
 ------------ TO-DO PUNTO 5.2 PARTE 2 ------------
 ------------ TO-DO PUNTO 5.3 PARTE 2 ------------
+
 ------------ TO-DO PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
 ------------ TO-DO PUNTO 6 Eventos ordenados PARTE 2 ------------
 ------------ TO-DO PUNTO 6 Años ordenados  PARTE 2 ------------
@@ -257,6 +292,28 @@ azul2015 = UnaCiudad {
     , anioFundacion = 1832
     , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 190 }
+azulConMasCostoVida :: Ciudad
+azulConMasCostoVida = UnaCiudad {
+    nombre = "New Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , costoVida = 219.45
+}
+nullishConMasValor :: Ciudad
+nullishConMasValor = UnaCiudad {
+    nombre = "New Nullish"
+    , anioFundacion = 1800
+    , atraccionesPrincipales = []
+    , costoVida = 147
+}
+azulConMenosCostoVida :: Ciudad
+azulConMenosCostoVida = UnaCiudad {
+    nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales =
+        ["Teatro Espaniol", "Parque Municipal Sarmiento"]
+    , costoVida = 171
+}
 
 --- Anios para los test
 anio2022 :: Anio
