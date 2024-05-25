@@ -1,5 +1,7 @@
 module Library where
 import PdePreludat
+import GHC.Base (Float, Int)
+import GHC.Num (Num)
 
 ------------ PUNTO 1 PARTE 1 ------------
 
@@ -54,8 +56,7 @@ esVocal caracter = caracter `elem` "aeiouAEIOU"
 
 -- CIUDAD SOBRIA:
 esSobria :: Number -> Ciudad -> Bool
-esSobria xLetras ciudad | null (atraccionesPrincipales ciudad) = False
-                        | otherwise = all((> xLetras).length) (atraccionesPrincipales ciudad)
+esSobria xLetras ciudad = all((> xLetras).length) (atraccionesPrincipales ciudad)
 
 -- CIUDAD CON NOMBRE RARO:
 tieneNombreRaro :: Ciudad -> Bool
@@ -93,8 +94,11 @@ remodelaCiudad incremento ciudad = UnaCiudad {
     , costoVida = costoVida ciudad * (1 + incremento / 100)
 }
 
------------- TO-DO Punto 3 ------------
 -- REEVALUACION:
+reevaluarCiudad :: Number -> Ciudad -> Ciudad
+reevaluarCiudad n ciudad 
+                        | esSobria n ciudad = ciudad { costoVida = costoVida ciudad * 1.1}
+                        | otherwise = ciudad { costoVida = costoVida ciudad - 3}
 
 ------------ PUNTO 4 PARTE 1 ------------
 {-- 
