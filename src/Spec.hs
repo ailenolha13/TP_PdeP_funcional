@@ -63,11 +63,9 @@ correrTests = hspec $ do
     it "La ciudad Azul tras atravesar una crisis no subio su costo de vida" $ do
       subeRespectoCriterio azul criterioCostoVida atraviesaCrisis
       `shouldBe` False
-  describe "Test de la funcion subeRespectoCriterio" $ do
     it "La ciudad Azul tras el evento Agregar atraccion 'Monasterio Trapense' subio su costo de vida" $ do
       subeRespectoCriterio azul criterioCostoVida (agregaNuevaAtraccion "Monasterio Trapense")
       `shouldBe` True
-  describe "Test de la funcion subeRespectoCriterio" $ do
     it "La ciudad Azul tras el evento Agregar atraccion 'Monasterio Trapense' subio la cantidad de atracciones" $ do
       subeRespectoCriterio azul criterioCantidadAtracciones (agregaNuevaAtraccion "Monasterio Trapense")
       `shouldBe` True
@@ -90,3 +88,12 @@ correrTests = hspec $ do
     it "La ciudad Nullish tras eventos ocurridos en el año 2022 que aumentan su valor queda con el nombre New Nullish y su costo de vida es 147" $ do
       aumentanValor anio2022 criterioCostoVida nullish
       `shouldBe` nullishConMasValor
+
+  -- Test "Eventos Ordenados"
+  describe "Test de la funcion estanOrdenadosLosEventos" $ do
+    it "El anio 2022 sobre la ciudad azul tiene los eventos ordenados" $ do
+      estanOrdenadosLosEventos anio2022 azul
+      `shouldBe` True
+    it "El anio 2023 no tiene los eventos ordenados" $ do
+      estanOrdenadosLosEventos anio2023 azul
+      `shouldBe` False

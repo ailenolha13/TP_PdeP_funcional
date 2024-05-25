@@ -8,7 +8,7 @@ import GHC.Num (Num)
 type ValorCiudad = Number
 
 -- Modelamos ciudades
--- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida
+-- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida0 
 data Ciudad = UnaCiudad {
     nombre :: String
     , anioFundacion :: Number
@@ -219,7 +219,18 @@ bajanCostoVida anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (fil
 aumentanValor :: Anio -> Criterio -> Ciudad -> Ciudad
 aumentanValor anio criterio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (subeRespectoCriterio ciudad criterio ) (eventos anio))
 
------------- TO-DO PUNTO 5.1 PARTE 2 ------------
+------------ PUNTO 5.1 PARTE 2 ------------
+
+-- Funcion que indica si los eventos de un anio estan ordenados segun si incrementan el costo de vida respecto del anterior evento
+estanOrdenadosLosEventos :: Anio -> Ciudad -> Bool
+estanOrdenadosLosEventos (UnAnio numero []) ciudad = True
+estanOrdenadosLosEventos (UnAnio numero [x]) ciudad = True
+estanOrdenadosLosEventos (UnAnio numero (x : xs)) ciudad = obtieneCambioCostoVida x ciudad < obtieneCambioCostoVida (head xs) ciudad && estanOrdenadosLosEventos (UnAnio numero xs) ciudad
+
+-- Funcion que obtiene el cambio del costo de vida para poder comparar
+obtieneCambioCostoVida :: Evento -> Ciudad -> Number
+obtieneCambioCostoVida evento ciudad = ((costoVida (evento ciudad) * 100 ) / costoVida ciudad) - 100
+
 ------------ TO-DO PUNTO 5.2 PARTE 2 ------------
 ------------ TO-DO PUNTO 5.3 PARTE 2 ------------
 
@@ -329,4 +340,9 @@ anio2015 :: Anio
 anio2015 = UnAnio {
     numero = 2015
     , eventos = []
+}
+anio2023 :: Anio
+anio2023 = UnAnio {
+    numero = 2023
+    , eventos = [atraviesaCrisis, agregaNuevaAtraccion "Parque", remodelaCiudad 10, remodelaCiudad 20]
 }
