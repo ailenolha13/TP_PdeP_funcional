@@ -1,14 +1,12 @@
 module Library where
 import PdePreludat
-import GHC.Base (Float, Int)
-import GHC.Num (Num)
 
 ------------ PUNTO 1 PARTE 1 ------------
 
 type ValorCiudad = Number
 
 -- Modelamos ciudades
--- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida0 
+-- Nos interesa conocer su nombre, el año de fundación, las atracciones principales y su costo de vida
 data Ciudad = UnaCiudad {
     nombre :: String
     , anioFundacion :: Number
@@ -56,7 +54,8 @@ esVocal caracter = caracter `elem` "aeiouAEIOU"
 
 -- CIUDAD SOBRIA:
 esSobria :: Number -> Ciudad -> Bool
-esSobria xLetras ciudad = all((> xLetras).length) (atraccionesPrincipales ciudad)
+esSobria xLetras ciudad | noTieneAtracciones ciudad = False
+                        | otherwise = all ((> xLetras) . length) (atraccionesPrincipales ciudad)
 
 -- CIUDAD CON NOMBRE RARO:
 tieneNombreRaro :: Ciudad -> Bool
@@ -96,9 +95,8 @@ remodelaCiudad incremento ciudad = UnaCiudad {
 
 -- REEVALUACION:
 reevaluarCiudad :: Number -> Ciudad -> Ciudad
-reevaluarCiudad n ciudad 
-                        | esSobria n ciudad = ciudad { costoVida = costoVida ciudad * 1.1}
-                        | otherwise = ciudad { costoVida = costoVida ciudad - 3}
+reevaluarCiudad n ciudad | esSobria n ciudad = ciudad { costoVida = costoVida ciudad * 1.1}
+                         | otherwise = ciudad { costoVida = costoVida ciudad - 3}
 
 ------------ PUNTO 4 PARTE 1 ------------
 {-- 
@@ -165,6 +163,29 @@ UnaCiudad
         , "Parque Municipal Sarmiento"
         ]
     , costoVida = 171
+    }
+
+--}
+
+{--
+
+Para que una ciudad tenga una reevaluacion, en la consola GHCI debemos usar la funcion reevaluarCiudad.
+La funcion reevaluarCiudad recibe como primer parametro el numero de letras (configurable),
+y como segundo parametro la ciudad a reevaluar.
+
+Para que la ciudad azul tenga una reevaluacion escribimos en la consola:
+reevaluarCiudad 14 azul
+
+La consola nos devuelve lo siguiente:
+UnaCiudad
+    { nombre = "Azul"
+    , anioFundacion = 1832
+    , atraccionesPrincipales =
+        [ "Teatro Espanol"
+        , "Parque Municipal Sarmiento"
+        , "Costanera Cacique Catriel"
+        ]
+    , costoVida = 187
     }
 
 --}
@@ -268,13 +289,13 @@ azul :: Ciudad
 azul = UnaCiudad {
     nombre = "Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 190 }
 azulNuevaAtraccion :: Ciudad
 azulNuevaAtraccion = UnaCiudad {
     nombre = "Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Balneario Municipal Alte. Guillermo Brown", "Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , atraccionesPrincipales = ["Balneario Municipal Alte. Guillermo Brown", "Teatro Espanol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 228 }
 maipu :: Ciudad
 maipu = UnaCiudad {
@@ -287,31 +308,31 @@ azulCrisis :: Ciudad
 azulCrisis = UnaCiudad {
     nombre = "Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento"]
     , costoVida = 171 }
 azulRemodelada :: Ciudad
 azulRemodelada = UnaCiudad {
     nombre = "New Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 285 }
 azul2022 :: Ciudad
 azul2022 = UnaCiudad {
     nombre = "New Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento"]
     , costoVida = 197.505 }
 azul2015 :: Ciudad
 azul2015 = UnaCiudad {
     nombre = "Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 190 }
 azulConMasCostoVida :: Ciudad
 azulConMasCostoVida = UnaCiudad {
     nombre = "New Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales = ["Teatro Espaniol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento", "Costanera Cacique Catriel"]
     , costoVida = 219.45
 }
 nullishConMasValor :: Ciudad
@@ -325,8 +346,7 @@ azulConMenosCostoVida :: Ciudad
 azulConMenosCostoVida = UnaCiudad {
     nombre = "Azul"
     , anioFundacion = 1832
-    , atraccionesPrincipales =
-        ["Teatro Espaniol", "Parque Municipal Sarmiento"]
+    , atraccionesPrincipales = ["Teatro Espanol", "Parque Municipal Sarmiento"]
     , costoVida = 171
 }
 
@@ -334,7 +354,7 @@ azulConMenosCostoVida = UnaCiudad {
 anio2022 :: Anio
 anio2022 = UnAnio {
     numero = 2022
-    , eventos = [atraviesaCrisis, remodelaCiudad 5] --FALTA AGREGAR REEVALUACION DE 7 LETRAS PARA LAS ATRACCIONES (FUNCION PARTE 1 NO CREADA TODAVIA)
+    , eventos = [atraviesaCrisis, remodelaCiudad 5, reevaluarCiudad 7]
 }
 anio2015 :: Anio
 anio2015 = UnAnio {

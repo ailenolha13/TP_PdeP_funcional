@@ -28,6 +28,27 @@ correrTests = hspec $ do
     it "La ciudad Caleta Olivia tiene atraccion copada" $ do
       tieneAtraccionCopada caletaOlivia
         `shouldBe` True
+    
+  -- Test "Ciudad sobria"
+  describe "Test de la funcion esSobria" $ do
+    it "La ciudad Baradero con atracciones de mas de 14 letras es sobria" $ do
+      esSobria 14 baradero
+        `shouldBe` True
+    it "La ciudad Baradero con atracciones de mas de 15 letras no es sobria" $ do
+      esSobria 15 baradero
+        `shouldBe` False
+    it "La ciudad Nullish sin atracciones y con 5 letras no es sobria" $ do
+      esSobria 5 nullish
+        `shouldBe` False
+
+  -- Test "Ciudad con nombre raro"
+  describe "Test de la funcion tieneNombreRaro" $ do
+    it "La ciudad Maipu no tiene nombre raro" $ do
+      tieneNombreRaro maipu
+        `shouldBe` False
+    it "La ciudad azul tiene nombre raro" $ do
+      tieneNombreRaro azul
+        `shouldBe` True
 
   -- Test "Agregar una nueva atraccion"
   describe "Test de la funcion agregaNuevaAtraccion" $ do
@@ -48,12 +69,10 @@ correrTests = hspec $ do
       `shouldBe` azulRemodelada -- Creamos una instancia Eq en Library.hs para poder comparar 2 valores de tipo Ciudad en este test
 
   -- Test "Los anios pasan..."
-  -- COMENTADO PORQUE ROMPE SIN LA FUNCION REEVALUACION DE LA PARTE 1 DEL TP
-  --describe "Test de la funcion reflejaAnioCiudad" $ do
-    --it "La ciudad Azul refleja el paso del anio 2022 quedando con el nombre New Azul, su costo de vida en 197.505 y las atracciones Teatro Espanio y Parque Municipal Sarmiento " $ do
-      --reflejaAnioCiudad anio2022 azul
-      --`shouldBe` azul2022
   describe "Test de la funcion reflejaAnioCiudad" $ do
+    it "La ciudad Azul refleja el paso del anio 2022 quedando con el nombre New Azul, su costo de vida en 197.505 y las atracciones Teatro Espanio y Parque Municipal Sarmiento " $ do
+      reflejaAnioCiudad anio2022 azul
+      `shouldBe` azul2022
     it "La ciudad Azul refleja el paso del anio 2015 quedando con el mismo costo de vida" $ do
       reflejaAnioCiudad anio2015 azul
       `shouldBe` azul2015
@@ -71,11 +90,10 @@ correrTests = hspec $ do
       `shouldBe` True
   
   -- Test "Costo de vida que suba"
-  -- COMENTADO PORQUE ROMPE SIN LA FUNCION REEVALUACION DE LA PARTE 1 DEL TP
-  --describe "Test de la funcion aumentanCostoVida" $ do
-    --it "La ciudad Azul tras eventos ocurridos en el año 2022 que aumentan su costo de vida queda con el nombre New Azul y su costo de vida pasa a 219.45" $ do
-      --aumentanCostoVida anio2022 azul
-      --`shouldBe` azulConMasCostoVida
+  describe "Test de la funcion aumentanCostoVida" $ do
+    it "La ciudad Azul tras eventos ocurridos en el año 2022 que aumentan su costo de vida queda con el nombre New Azul y su costo de vida pasa a 219.45" $ do
+      aumentanCostoVida anio2022 azul
+      `shouldBe` azulConMasCostoVida
 
   -- Test "Costo de vida que baje  "
   describe "Test de la funcion bajanCostoVida" $ do
