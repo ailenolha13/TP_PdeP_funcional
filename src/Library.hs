@@ -246,7 +246,7 @@ aumentanValor anio criterio ciudad = foldl (\ciudad evento -> evento ciudad) ciu
 estanOrdenadosLosEventos :: Anio -> Ciudad -> Bool
 estanOrdenadosLosEventos (UnAnio numero []) ciudad = True
 estanOrdenadosLosEventos (UnAnio numero [x]) ciudad = True
-estanOrdenadosLosEventos (UnAnio numero (x : xs)) ciudad = obtieneDiferenciaCostoVida x ciudad < obtieneDiferenciaCostoVida (head xs) ciudad && estanOrdenadosLosEventos (UnAnio numero xs) ciudad
+estanOrdenadosLosEventos (UnAnio numero (x : y : xs)) ciudad = obtieneDiferenciaCostoVida x ciudad <= obtieneDiferenciaCostoVida y ciudad && estanOrdenadosLosEventos (UnAnio numero (y : xs)) ciudad
 
 -- Funcion que obtiene la diferencia del cambio del costo de vida despues de aplicar un evento
 obtieneDiferenciaCostoVida :: Evento -> Ciudad -> Number
@@ -258,9 +258,15 @@ obtieneDiferenciaCostoVida evento ciudad = costoVida (evento ciudad) - costoVida
 ciudadesOrdenadas :: Evento -> [Ciudad] -> Bool
 ciudadesOrdenadas _ [] = True
 ciudadesOrdenadas _ [_] = True
-ciudadesOrdenadas evento (x : xs) = obtieneDiferenciaCostoVida evento x <= obtieneDiferenciaCostoVida evento (head xs) && ciudadesOrdenadas evento xs
+ciudadesOrdenadas evento (x : y : xs) = obtieneDiferenciaCostoVida evento x <= obtieneDiferenciaCostoVida evento y && ciudadesOrdenadas evento (y : xs)
 
------------- TO-DO PUNTO 5.3 PARTE 2 ------------
+------------ PUNTO 5.3 PARTE 2 ------------
+
+-- Funcion que verifica el costo de vida de manera ascendente a partir de una lista de años
+estanOrdenadosLosAnios :: [Anio] -> Ciudad -> Bool
+estanOrdenadosLosAnios [] _ = True -- Lista de años vacia, por lo tanto, la lista está ordenada por defecto
+estanOrdenadosLosAnios [anio] ciudad = True
+estanOrdenadosLosAnios (x : y : xs) ciudad = costoVida (reflejaAnioCiudad x ciudad) <= costoVida (reflejaAnioCiudad y ciudad) && estanOrdenadosLosAnios (y : xs) ciudad
 
 ------------ PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
 
@@ -287,8 +293,18 @@ aplicar el segundo evento reevaluarCiudad 7.
 
 --}
 
------------- TO-DO PUNTO 6 Años ordenados  PARTE 2 ------------
+------------ PUNTO 6 Años ordenados  PARTE 2 ------------
 
+{--
+
+Si ejecutaramos en la consola por ejemplo estanOrdenadosLosAnios [anio2024] baradero,
+devolveria True ya que contemplamos el caso donde se pasa un solo año: estanOrdenadosLosAnios [anio] ciudad = True
+, pero para el caso donde se pasa no solo el anio2024 sino otros años tambien,
+como por ejemplo estanOrdenadosLosAnios [anio2021, anio2024] baradero,
+no es posible obtener un resultado ya que la lista de eventos del anio2024 es infinita, por lo tanto,
+no terminaria de ejecutar.
+
+--}
 
 ------------ UTIL PARA EJECUTAR LOS TEST ------------
 
@@ -395,4 +411,9 @@ anio2023 :: Anio
 anio2023 = UnAnio {
     numero = 2023
     , eventos = [atraviesaCrisis, agregaNuevaAtraccion "Parque", remodelaCiudad 10, remodelaCiudad 20]
+}
+anio2021 :: Anio
+anio2021 = UnAnio {
+    numero = 2021
+    , eventos = [atraviesaCrisis, agregaNuevaAtraccion "playa"]
 }
