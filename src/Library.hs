@@ -246,13 +246,20 @@ aumentanValor anio criterio ciudad = foldl (\ciudad evento -> evento ciudad) ciu
 estanOrdenadosLosEventos :: Anio -> Ciudad -> Bool
 estanOrdenadosLosEventos (UnAnio numero []) ciudad = True
 estanOrdenadosLosEventos (UnAnio numero [x]) ciudad = True
-estanOrdenadosLosEventos (UnAnio numero (x : xs)) ciudad = obtieneCambioCostoVida x ciudad < obtieneCambioCostoVida (head xs) ciudad && estanOrdenadosLosEventos (UnAnio numero xs) ciudad
+estanOrdenadosLosEventos (UnAnio numero (x : xs)) ciudad = obtieneDiferenciaCostoVida x ciudad < obtieneDiferenciaCostoVida (head xs) ciudad && estanOrdenadosLosEventos (UnAnio numero xs) ciudad
 
--- Funcion que obtiene el cambio del costo de vida para poder comparar
-obtieneCambioCostoVida :: Evento -> Ciudad -> Number
-obtieneCambioCostoVida evento ciudad = ((costoVida (evento ciudad) * 100 ) / costoVida ciudad) - 100
+-- Funcion que obtiene la diferencia del cambio del costo de vida despues de aplicar un evento
+obtieneDiferenciaCostoVida :: Evento -> Ciudad -> Number
+obtieneDiferenciaCostoVida evento ciudad = costoVida (evento ciudad) - costoVida ciudad
 
------------- TO-DO PUNTO 5.2 PARTE 2 ------------
+------------ PUNTO 5.2 PARTE 2 ------------
+
+--CIUDADES ORDENADAS
+ciudadesOrdenadas :: Evento -> [Ciudad] -> Bool
+ciudadesOrdenadas _ [] = True
+ciudadesOrdenadas _ [_] = True
+ciudadesOrdenadas evento (x : xs) = obtieneDiferenciaCostoVida evento x <= obtieneDiferenciaCostoVida evento (head xs) && ciudadesOrdenadas evento xs
+
 ------------ TO-DO PUNTO 5.3 PARTE 2 ------------
 
 ------------ PUNTO 6 Una serie de eventos interminables PARTE 2 ------------

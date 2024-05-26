@@ -115,3 +115,12 @@ correrTests = hspec $ do
     it "El anio 2023 no tiene los eventos ordenados" $ do
       estanOrdenadosLosEventos anio2023 azul
       `shouldBe` False
+
+  -- Test "Ciudades Ordenadas"
+  describe "Test de la funcion ciudadesOrdenadas" $ do
+    it "Dado el evento remodelacion del 10%, las ciudades Caleta Olivia, Nullish, Baradero y Azul estan ordenadas" $ do
+      ciudadesOrdenadas (remodelaCiudad 10) [caletaOlivia, nullish, baradero, azul]
+      `shouldBe` True
+    it "Dado el evento remodelacion del 10%, las ciudades Caleta Olivia, Azul y Baradero no estan ordenadas" $ do
+      ciudadesOrdenadas (remodelaCiudad 10) [caletaOlivia, azul, baradero]
+      `shouldBe` False
