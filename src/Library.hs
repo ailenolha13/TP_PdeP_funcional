@@ -255,8 +255,31 @@ obtieneCambioCostoVida evento ciudad = ((costoVida (evento ciudad) * 100 ) / cos
 ------------ TO-DO PUNTO 5.2 PARTE 2 ------------
 ------------ TO-DO PUNTO 5.3 PARTE 2 ------------
 
------------- TO-DO PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
------------- TO-DO PUNTO 6 Eventos ordenados PARTE 2 ------------
+------------ PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
+
+-- Definimos el anio 2024
+anio2024 :: Anio
+anio2024 = UnAnio {
+    numero = 2024
+    , eventos = [atraviesaCrisis, reevaluarCiudad 7] ++ generaListaRemodelacionInfinita 1
+}
+
+-- Generamos una lista infinita de remodelaciones en la cual va aumentando de a 1 el incremento
+generaListaRemodelacionInfinita :: Number -> [Evento]
+generaListaRemodelacionInfinita x = remodelaCiudad x : generaListaRemodelacionInfinita  (x + 1)
+
+------------  PUNTO 6 Eventos ordenados PARTE 2 ------------
+
+{--
+
+El resultado de aplicar la funcion estanOrdenadosLosEventos para el año 2024 devolveria False,
+ya que sin importar que la lista infinita de remodelaCiudad vaya en aumento,
+al aplicar los 3 primeros eventos (AtraviesaCrisis, reevaluarCiudad 7, remodelaCiudad 1) no estan ordenados de acuerdo al criterio de
+aumento del costo de vida respecto del evento anterior. El evento remodelaCiudad 1 baja el costo de vida que tenia la ciudad despues de
+aplicar el segundo evento reevaluarCiudad 7.
+
+--}
+
 ------------ TO-DO PUNTO 6 Años ordenados  PARTE 2 ------------
 
 
