@@ -46,7 +46,7 @@ resta numero1 numero2 = numero1 - numero2
 
 -- Funcion para saber si la ciudad tiene una atraccion copada
 tieneAtraccionCopada :: Ciudad -> Bool
-tieneAtraccionCopada = any esVocal . map head . atraccionesPrincipales
+tieneAtraccionCopada ciudad = not (noTieneAtracciones ciudad) && any (esVocal . head) (atraccionesPrincipales ciudad)
 
 -- Funcion para saber si un caracter es vocal o no
 esVocal :: Char -> Bool
@@ -54,8 +54,7 @@ esVocal caracter = caracter `elem` "aeiouAEIOU"
 
 -- CIUDAD SOBRIA:
 esSobria :: Number -> Ciudad -> Bool
-esSobria xLetras ciudad | noTieneAtracciones ciudad = False
-                        | otherwise = all ((> xLetras) . length) (atraccionesPrincipales ciudad)
+esSobria xLetras ciudad = not (noTieneAtracciones ciudad) && all ((> xLetras) . length) (atraccionesPrincipales ciudad)
 
 -- CIUDAD CON NOMBRE RARO:
 tieneNombreRaro :: Ciudad -> Bool
@@ -68,28 +67,22 @@ type Incremento = Number
 
 -- Como no hay efecto de lado, cuando queremos agregar una nueva atraccion a una ciudad recibimos la ciudad y devolvemos una ciudad nueva
 agregaNuevaAtraccion :: Atraccion -> Ciudad -> Ciudad
-agregaNuevaAtraccion nueva ciudad = UnaCiudad {
-    nombre = nombre ciudad
-    , anioFundacion = anioFundacion ciudad
-    , atraccionesPrincipales = nueva : atraccionesPrincipales ciudad
+agregaNuevaAtraccion nueva ciudad = ciudad {
+    atraccionesPrincipales = nueva : atraccionesPrincipales ciudad
     , costoVida = costoVida ciudad * 1.2
 }
 
 -- Como no hay efecto de lado, cuando una ciudad atraviesa una crisis recibimos la ciudad y devolvemos una ciudad nueva
 atraviesaCrisis :: Ciudad -> Ciudad
-atraviesaCrisis ciudad = UnaCiudad {
-    nombre = nombre ciudad
-    , anioFundacion = anioFundacion ciudad
-    , atraccionesPrincipales = init (atraccionesPrincipales ciudad)
+atraviesaCrisis ciudad = ciudad {
+    atraccionesPrincipales = init (atraccionesPrincipales ciudad)
     , costoVida = costoVida ciudad * 0.9 
 }
 
 -- Como no hay efecto de lado, cuando queremos remodelar una ciudad recibimos la ciudad y devolvemos una ciudad nueva remodelada
 remodelaCiudad :: Incremento -> Ciudad -> Ciudad
-remodelaCiudad incremento ciudad = UnaCiudad {
+remodelaCiudad incremento ciudad = ciudad {
     nombre = "New " ++ nombre ciudad
-    , anioFundacion = anioFundacion ciudad
-    , atraccionesPrincipales = atraccionesPrincipales ciudad
     , costoVida = costoVida ciudad * (1 + incremento / 100)
 }
 
@@ -220,9 +213,13 @@ subeRespectoCriterio ciudad criterio evento =  criterio ciudad < criterio (event
 
 ------------ PUNTO 4.3 PARTE 2 ------------
 
+-- Funcion generica para los puntos 4.3, 4.4 y 4.5 para no repetir logica
+aplicaEvento :: (Ciudad -> Criterio -> Evento -> Bool) -> Criterio -> Anio -> Ciudad -> Ciudad
+aplicaEvento criterioComparacion criterio anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (criterioComparacion ciudad criterio) (eventos anio))
+
 --Funcion que aplica eventos que hagan que el costo de vida de la ciudad suba
 aumentanCostoVida :: Anio -> Ciudad -> Ciudad
-aumentanCostoVida anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (subeRespectoCriterio ciudad criterioCostoVida) (eventos anio))
+aumentanCostoVida = aplicaEvento subeRespectoCriterio criterioCostoVida
 
 ------------ PUNTO 4.4 PARTE 2 ------------
 
@@ -232,21 +229,25 @@ bajaRespectoCriterio ciudad criterio evento =  criterio ciudad > criterio (event
 
 --Funcion que aplica eventos que hagan que el costo de vida de la ciudad baje
 bajanCostoVida :: Anio -> Ciudad -> Ciudad
-bajanCostoVida anio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (bajaRespectoCriterio ciudad criterioCostoVida) (eventos anio))
+bajanCostoVida = aplicaEvento bajaRespectoCriterio criterioCostoVida
 
 ------------ PUNTO 4.5 PARTE 2 ------------
 
 --Funcion que aplica eventos que hagan que el valor de la ciudad suba
-aumentanValor :: Anio -> Criterio -> Ciudad -> Ciudad
-aumentanValor anio criterio ciudad = foldl (\ciudad evento -> evento ciudad) ciudad (filter (subeRespectoCriterio ciudad criterio ) (eventos anio))
+aumentanValor ::  Criterio -> Anio -> Ciudad -> Ciudad
+aumentanValor = aplicaEvento subeRespectoCriterio
 
 ------------ PUNTO 5.1 PARTE 2 ------------
+
+-- Funcion generica usada para los puntos 5.1, 5.2 y 5.3 para no repetir logica en las funciones
+comparaCostovida :: Number -> Number -> Bool
+comparaCostovida x y = x <= y
 
 -- Funcion que indica si los eventos de un anio estan ordenados segun si incrementan el costo de vida respecto del anterior evento
 estanOrdenadosLosEventos :: Anio -> Ciudad -> Bool
 estanOrdenadosLosEventos (UnAnio numero []) ciudad = True
 estanOrdenadosLosEventos (UnAnio numero [x]) ciudad = True
-estanOrdenadosLosEventos (UnAnio numero (x : y : xs)) ciudad = obtieneDiferenciaCostoVida x ciudad <= obtieneDiferenciaCostoVida y ciudad && estanOrdenadosLosEventos (UnAnio numero (y : xs)) ciudad
+estanOrdenadosLosEventos (UnAnio numero (x : y : xs)) ciudad = comparaCostovida (obtieneDiferenciaCostoVida x ciudad) (obtieneDiferenciaCostoVida y ciudad) && estanOrdenadosLosEventos (UnAnio numero (y : xs)) ciudad
 
 -- Funcion que obtiene la diferencia del cambio del costo de vida despues de aplicar un evento
 obtieneDiferenciaCostoVida :: Evento -> Ciudad -> Number
@@ -258,7 +259,7 @@ obtieneDiferenciaCostoVida evento ciudad = costoVida (evento ciudad) - costoVida
 ciudadesOrdenadas :: Evento -> [Ciudad] -> Bool
 ciudadesOrdenadas _ [] = True
 ciudadesOrdenadas _ [_] = True
-ciudadesOrdenadas evento (x : y : xs) = obtieneDiferenciaCostoVida evento x <= obtieneDiferenciaCostoVida evento y && ciudadesOrdenadas evento (y : xs)
+ciudadesOrdenadas evento (x : y : xs) = comparaCostovida (obtieneDiferenciaCostoVida evento x) (obtieneDiferenciaCostoVida evento y) && ciudadesOrdenadas evento (y : xs)
 
 ------------ PUNTO 5.3 PARTE 2 ------------
 
@@ -266,7 +267,11 @@ ciudadesOrdenadas evento (x : y : xs) = obtieneDiferenciaCostoVida evento x <= o
 estanOrdenadosLosAnios :: [Anio] -> Ciudad -> Bool
 estanOrdenadosLosAnios [] _ = True -- Lista de años vacia, por lo tanto, la lista está ordenada por defecto
 estanOrdenadosLosAnios [anio] ciudad = True
-estanOrdenadosLosAnios (x : y : xs) ciudad = costoVida (reflejaAnioCiudad x ciudad) <= costoVida (reflejaAnioCiudad y ciudad) && estanOrdenadosLosAnios (y : xs) ciudad
+--estanOrdenadosLosAnios (x : y : xs) ciudad = comparaCostovida (costoVida (reflejaAnioCiudad x ciudad)) (costoVida (reflejaAnioCiudad y ciudad)) && estanOrdenadosLosAnios (y : xs) ciudad
+estanOrdenadosLosAnios (x : y : xs) ciudad = comparaCostovida (obtieneCostoVida x ciudad) (obtieneCostoVida y ciudad) && estanOrdenadosLosAnios (y : xs) ciudad
+
+obtieneCostoVida :: Anio -> Ciudad -> Number
+obtieneCostoVida anio ciudad = costoVida (reflejaAnioCiudad anio ciudad)
 
 ------------ PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
 
