@@ -104,7 +104,7 @@ correrTests = hspec $ do
   -- Test "Valor que suba"
   describe "Test de la funcion aumentanValor" $ do
     it "La ciudad Nullish tras eventos ocurridos en el año 2022 que aumentan su valor queda con el nombre New Nullish y su costo de vida es 147" $ do
-      aumentanValor anio2022 criterioCostoVida nullish
+      aumentanValor criterioCostoVida anio2022 nullish
       `shouldBe` nullishConMasValor
 
   -- Test "Eventos Ordenados"
