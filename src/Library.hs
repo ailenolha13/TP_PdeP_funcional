@@ -240,38 +240,39 @@ aumentanValor = aplicaEvento subeRespectoCriterio
 ------------ PUNTO 5.1 PARTE 2 ------------
 
 -- Funcion generica usada para los puntos 5.1, 5.2 y 5.3 para no repetir logica en las funciones
+estanOrdenadosSegun :: (a -> a -> Bool) -> (b -> a) -> [b] -> Bool
+estanOrdenadosSegun _ _ [] = True
+estanOrdenadosSegun _ _ [_] = True
+estanOrdenadosSegun criterio obtieneValor (x : y : xs) = criterio (obtieneValor x) (obtieneValor y) && estanOrdenadosSegun criterio obtieneValor (y : xs)
+
 comparaCostovida :: Number -> Number -> Bool
 comparaCostovida x y = x <= y
 
 -- Funcion que indica si los eventos de un anio estan ordenados segun si incrementan el costo de vida respecto del anterior evento
 estanOrdenadosLosEventos :: Anio -> Ciudad -> Bool
-estanOrdenadosLosEventos (UnAnio numero []) ciudad = True
-estanOrdenadosLosEventos (UnAnio numero [x]) ciudad = True
-estanOrdenadosLosEventos (UnAnio numero (x : y : xs)) ciudad = comparaCostovida (obtieneDiferenciaCostoVida x ciudad) (obtieneDiferenciaCostoVida y ciudad) && estanOrdenadosLosEventos (UnAnio numero (y : xs)) ciudad
+estanOrdenadosLosEventos anio ciudad = estanOrdenadosSegun comparaCostovida (obtieneDiferenciaCostoVidaParaEvento ciudad) (eventos anio)
 
--- Funcion que obtiene la diferencia del cambio del costo de vida despues de aplicar un evento
-obtieneDiferenciaCostoVida :: Evento -> Ciudad -> Number
-obtieneDiferenciaCostoVida evento ciudad = costoVida (evento ciudad) - costoVida ciudad
+-- Funcion que obtiene la diferencia del cambio del costo de vida
+obtieneDiferenciaCostoVida :: (Ciudad -> Ciudad) -> Ciudad -> Number
+obtieneDiferenciaCostoVida funcion ciudad = costoVida (funcion ciudad) - costoVida ciudad
+-- Funcion auxiliar
+obtieneDiferenciaCostoVidaParaEvento :: Ciudad -> Evento -> Number
+obtieneDiferenciaCostoVidaParaEvento ciudad evento = obtieneDiferenciaCostoVida evento ciudad
 
 ------------ PUNTO 5.2 PARTE 2 ------------
 
 --CIUDADES ORDENADAS
-ciudadesOrdenadas :: Evento -> [Ciudad] -> Bool
-ciudadesOrdenadas _ [] = True
-ciudadesOrdenadas _ [_] = True
-ciudadesOrdenadas evento (x : y : xs) = comparaCostovida (obtieneDiferenciaCostoVida evento x) (obtieneDiferenciaCostoVida evento y) && ciudadesOrdenadas evento (y : xs)
+ciudadesOrdenadas :: [Ciudad] -> Evento -> Bool
+ciudadesOrdenadas ciudades evento = estanOrdenadosSegun comparaCostovida (obtieneDiferenciaCostoVida evento) ciudades
 
 ------------ PUNTO 5.3 PARTE 2 ------------
 
 -- Funcion que verifica el costo de vida de manera ascendente a partir de una lista de años
 estanOrdenadosLosAnios :: [Anio] -> Ciudad -> Bool
-estanOrdenadosLosAnios [] _ = True -- Lista de años vacia, por lo tanto, la lista está ordenada por defecto
-estanOrdenadosLosAnios [anio] ciudad = True
---estanOrdenadosLosAnios (x : y : xs) ciudad = comparaCostovida (costoVida (reflejaAnioCiudad x ciudad)) (costoVida (reflejaAnioCiudad y ciudad)) && estanOrdenadosLosAnios (y : xs) ciudad
-estanOrdenadosLosAnios (x : y : xs) ciudad = comparaCostovida (obtieneCostoVida x ciudad) (obtieneCostoVida y ciudad) && estanOrdenadosLosAnios (y : xs) ciudad
+estanOrdenadosLosAnios anios ciudad = estanOrdenadosSegun comparaCostovida (obtieneCostoVida ciudad) anios
 
-obtieneCostoVida :: Anio -> Ciudad -> Number
-obtieneCostoVida anio ciudad = costoVida (reflejaAnioCiudad anio ciudad)
+obtieneCostoVida :: Ciudad -> Anio -> Number
+obtieneCostoVida ciudad anio = costoVida (reflejaAnioCiudad anio ciudad)
 
 ------------ PUNTO 6 Una serie de eventos interminables PARTE 2 ------------
 
