@@ -119,10 +119,10 @@ correrTests = hspec $ do
   -- Test "Ciudades Ordenadas"
   describe "Test de la funcion ciudadesOrdenadas" $ do
     it "Dado el evento remodelacion del 10%, las ciudades Caleta Olivia, Nullish, Baradero y Azul estan ordenadas" $ do
-      ciudadesOrdenadas (remodelaCiudad 10) [caletaOlivia, nullish, baradero, azul]
+      ciudadesOrdenadas [caletaOlivia, nullish, baradero, azul] (remodelaCiudad 10)
       `shouldBe` True
     it "Dado el evento remodelacion del 10%, las ciudades Caleta Olivia, Azul y Baradero no estan ordenadas" $ do
-      ciudadesOrdenadas (remodelaCiudad 10) [caletaOlivia, azul, baradero]
+      ciudadesOrdenadas [caletaOlivia, azul, baradero] (remodelaCiudad 10) 
       `shouldBe` False
 
   -- Test "Años Ordenados"
